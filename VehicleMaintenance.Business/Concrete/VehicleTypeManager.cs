@@ -66,7 +66,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            vehicleType.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID,
+            vehicleType.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             vehicleType.ModifyDate = DateTime.Now.TimeOfDay;
             vehicleType.IsDeleted = true;
             _vehicleTypeDal.Update(vehicleType);
@@ -145,7 +145,7 @@ namespace VehicleMaintenance.Business.Concrete
             }
 
             existingVehicleType.Name = vehicleTypeDto.Name;
-            existingVehicleType.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID,
+            existingVehicleType.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingVehicleType.ModifyDate = DateTime.Now.TimeOfDay;
 
             _vehicleTypeDal.Update(existingVehicleType);

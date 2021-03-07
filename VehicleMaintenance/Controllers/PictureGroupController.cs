@@ -31,7 +31,7 @@ namespace VehicleMaintenance.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("GetPictureGroup")]
+        [Route("GetPictureGroup/{id}")]
         public ActionResult GetPictureGroup(int id)
         {
             var response = _pictureGroupService.GetPictureGroupById(id);

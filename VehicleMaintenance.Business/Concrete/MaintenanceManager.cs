@@ -36,7 +36,7 @@ namespace VehicleMaintenance.Business.Concrete
                 LocationLatitude = maintenanceDto.LocationLatitude,
                 LocationLongitude = maintenanceDto.LocationLongitude,
                 PictureGroup = _unitOfWork.GetRepository<PictureGroup>().Get(p => p.ID == maintenanceDto.PictureGroup.ID),
-                ResponsibleUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.ResponsibleUserID),
+                ResponsibleUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.ResponsibleUser.ID),
                 Status = _unitOfWork.GetRepository<Status>().Get(p => p.ID == maintenanceDto.Status.ID),
                 Vehicle = _unitOfWork.GetRepository<Vehicle>().Get(p => p.ID == maintenanceDto.Vehicle.ID),
                 User = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.User.ID),
@@ -51,6 +51,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Kayıt esnasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new MaintenanceDto().Map(maintenance);
             return response;
         }
 
@@ -80,6 +81,7 @@ namespace VehicleMaintenance.Business.Concrete
 
             }
 
+            response.Data = new MaintenanceDto().Map(maintenance);
             return response;
         }
 
@@ -126,7 +128,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Bakım bulunamadı.";
                 return response;
             }
-
+            response.Data = maintenance;
             return response;
         }
 
@@ -164,6 +166,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Bakım güncellenirken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new MaintenanceDto().Map(existingMaintenance);
             return response;
         }
     }

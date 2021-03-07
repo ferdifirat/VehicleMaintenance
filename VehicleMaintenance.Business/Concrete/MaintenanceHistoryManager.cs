@@ -36,21 +36,14 @@ namespace VehicleMaintenance.Business.Concrete
             if (maintenanceHistories == null || !maintenanceHistories.Any())
             {
                 response.IsSuccess = false;
-                response.Message = "History bulunamadı.";
+                response.Message = "Bakım geçmişi bulunamadı.";
                 return response;
             }
             var maintenanceHistoryDtos = new List<MaintenanceHistoryDto>();
 
             foreach (var maintenanceHistory in maintenanceHistories)
             {
-                var maintenanceDto = new MaintenanceHistoryDto()
-                {
-                    ID = maintenanceHistory.ID,
-                    ActionTypeID = maintenanceHistory.ActionType.ID,
-                    MaintenanceID = maintenanceHistory.Maintenance.ID,
-                };
-
-                maintenanceHistoryDtos.Add(maintenanceDto);
+                maintenanceHistoryDtos.Add(new MaintenanceHistoryDto().Map(maintenanceHistory));
             }
 
             response.Data = maintenanceHistoryDtos;
@@ -64,18 +57,11 @@ namespace VehicleMaintenance.Business.Concrete
             if (maintenanceHistory == null)
             {
                 response.IsSuccess = false;
-                response.Message = "History bulunamadı.";
+                response.Message = "Bakım geçmişi bulunamadı.";
                 return response;
             }
 
-            var maintenanceDto = new MaintenanceHistoryDto()
-            {
-                ID = maintenanceHistory.ID,
-                ActionTypeID = maintenanceHistory.ActionType.ID,
-                MaintenanceID = maintenanceHistory.Maintenance.ID,
-            };
-
-            response.Data = maintenanceDto;
+            response.Data = new MaintenanceHistoryDto().Map(maintenanceHistory);
             return response;
         }
 

@@ -9,9 +9,6 @@ namespace VehicleMaintenance.Entity.DTOs
     {
         public int ID { get; set; }
         public string Name { get; set; }
-
-
-        
     }
     
     
@@ -23,7 +20,6 @@ namespace VehicleMaintenance.Entity.DTOs
         public TimeSpan ModifyDate { get; set; }
         public int ModifiedBy { get; set; }
         public bool IsDeleted { get; set; }
-
         public string Name { get; set; }
 
 
@@ -33,12 +29,8 @@ namespace VehicleMaintenance.Entity.DTOs
             this.CreateDate = type.CreateDate;
             this.CreatedByUser = new UserDto().Map(type.CreatedByUser);
             this.IsDeleted = type.IsDeleted;
-
+            this.Name = type.Name;
             return this;
-
         }
-
-
-
     }
 }

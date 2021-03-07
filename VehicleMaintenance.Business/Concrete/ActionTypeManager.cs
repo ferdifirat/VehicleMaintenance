@@ -83,6 +83,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Aksiyon tipi güncellenirken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new ActionTypeDto().Map(existingActionType);
             return response;
 
         }
@@ -113,6 +114,7 @@ namespace VehicleMaintenance.Business.Concrete
 
             }
 
+            response.Data = new ActionTypeDto().Map(actionType);
             return response;
         }
 
@@ -126,7 +128,8 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Aksiyon Tipi bulunamadı.";
                 return response;
             }
-            response.Data = new ActionTypeDto().Map(actionType); ;
+
+            response.Data = new ActionTypeDto().Map(actionType);
             return response;
         }
 
@@ -142,17 +145,11 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Aksiyon tipi bulunamadı.";
                 return response;
             }
-            var actionTypeDtos = new List<AddActionTypeDto>();
+            var actionTypeDtos = new List<ActionTypeDto>();
 
-            foreach (var actionType in actionTypeDtos)
+            foreach (var actionType in actionTypes)
             {
-                var actionTypeDto = new AddActionTypeDto()
-                {
-                    ID = actionType.ID,
-                    Name = actionType.Name,
-                };
-
-                actionTypeDtos.Add(actionTypeDto);
+                actionTypeDtos.Add(new ActionTypeDto().Map(actionType));
             }
 
             response.Data = actionTypeDtos;

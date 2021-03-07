@@ -51,6 +51,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Kayıt esnasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new StatusDto().Map(existingStatus);
             return response;
         }
 
@@ -78,6 +79,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Durum silinirken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new StatusDto().Map(status);
             return response;
         }
 
@@ -157,6 +159,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Durum güncellenirken bir hata oluştu lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new StatusDto().Map(existingStatus);
             return response;
         }
     }

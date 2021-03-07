@@ -31,7 +31,7 @@ namespace VehicleMaintenance.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("GetMaintenanceHistory")]
+        [Route("GetMaintenanceHistory/{id}")]
         public ActionResult GetMaintenanceHistory(int id)
         {
             var response = _maintenanceHistoryService.GetMaintenanceHistoryById(id);

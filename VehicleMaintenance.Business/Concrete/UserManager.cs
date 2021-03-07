@@ -50,6 +50,12 @@ namespace VehicleMaintenance.Business.Concrete
                 Email = dto.Email,
                 ID = dto.ID,
                 FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
+                Address = dto.Address,
+                IsDeleted = false,
+                PhoneNumber = dto.PhoneNumber,
+                ProfilePicture = dto.ProfilePicture,
                 CreateDate = DateTime.Now.TimeOfDay,
                 Password = Encoding.UTF8.GetBytes(Hashing.HashPassword(PasswordGenerator(8))),
             };
@@ -65,6 +71,7 @@ namespace VehicleMaintenance.Business.Concrete
 
             }
 
+            response.Data = new UserDto().Map(existingUser);
             return response;
         }
 
@@ -95,6 +102,7 @@ namespace VehicleMaintenance.Business.Concrete
             }
 
 
+            response.Data = new UserDto().Map(user);
             return response;
         }
 
@@ -115,8 +123,15 @@ namespace VehicleMaintenance.Business.Concrete
                 Email = user.Email,
                 ID = user.ID,
                 FirstName = user.FirstName,
+                LastName = user.LastName,
+                CreateDate = user.CreateDate,
+                Address = user.Address,
+                ProfilePicture = user.ProfilePicture,
+                PhoneNumber = user.PhoneNumber,
+                IsDeleted = user.IsDeleted,
+                ModifyDate = user.ModifyDate,
+                ModifiedBy = user.ModifiedBy,
             };
-
 
             response.Data = userDto;
             return response;
@@ -212,7 +227,12 @@ namespace VehicleMaintenance.Business.Concrete
             {
                 CreateDate = DateTime.Now.TimeOfDay,
                 Email = register.Email,
-                FirstName = register.Name,
+                FirstName = register.FirstName,
+                LastName = register.LastName,
+                ProfilePicture = register.ProfilePicture,
+                Address = register.Address,
+                IsDeleted = false,
+                PhoneNumber = register.PhoneNumber,
                 Password = passwordByte,
             };
 

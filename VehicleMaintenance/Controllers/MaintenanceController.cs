@@ -29,7 +29,7 @@ namespace VehicleMaintenance.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("GetMaintenance")]
+        [Route("GetMaintenance/{id}")]
         public ActionResult GetMaintenance(int id)
         {
             var response = _maintenanceService.GetMaintenanceById(id);

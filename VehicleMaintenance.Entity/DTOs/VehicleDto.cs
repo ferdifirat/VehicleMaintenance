@@ -8,9 +8,27 @@ namespace VehicleMaintenance.Entity.DTOs
     public class VehicleDto
     {
         public int ID { get; set; }
+        public TimeSpan CreateDate { get; set; }
+        public virtual UserDto CreatedByUser { get; set; }
+        public TimeSpan ModifyDate { get; set; }
+        public int ModifiedBy { get; set; }
+        public bool IsDeleted { get; set; }
         public string PlateNo { get; set; }
         public int UserID { get; set; }
-        public int VehicleTypeId { get; set; }
         public string Name { get; set; }
+        public VehicleTypeDto VehicleType{ get; set; }
+        public UserDto User { get; set; }
+
+        public VehicleDto Map(Vehicle type)
+        {
+            this.ID = type.ID;
+            this.CreateDate = type.CreateDate;
+            this.CreatedByUser = new UserDto().Map(type.CreatedByUser);
+            this.VehicleType = new VehicleTypeDto().Map(type.VehicleType);
+            this.User = new UserDto().Map(type.User);
+            this.IsDeleted = type.IsDeleted;
+            this.Name = type.Name;
+            return this;
+        }
     }
 }

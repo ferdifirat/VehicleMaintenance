@@ -31,7 +31,7 @@ namespace VehicleMaintenance.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("GetStatus")]
+        [Route("GetStatus/{id}")]
         public ActionResult GetStatus(int id)
         {
             var response = _statusService.GetStatusById(id);

@@ -39,7 +39,7 @@ namespace VehicleMaintenance.Business.Concrete
                 CreateDate = DateTime.Now.TimeOfDay,
                 CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
                 IsDeleted = false,
-                VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleTypeId),
+                VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleType.ID),
                 User = _unitOfWork.GetRepository<User>().Get(p => p.ID == vehicleDto.UserID),
                 PlateNo = vehicleDto.PlateNo,
                 Name = vehicleDto.Name,
@@ -99,18 +99,9 @@ namespace VehicleMaintenance.Business.Concrete
             }
             var vehicleDtos = new List<VehicleDto>();
 
-            foreach (var vehicle in vehicleDtos)
+            foreach (var vehicle in vehicles)
             {
-                var actionTypeDto = new VehicleDto()
-                {
-                    ID = vehicle.ID,
-                    Name = vehicle.Name,
-                    PlateNo = vehicle.PlateNo,
-                    UserID = vehicle.UserID,
-                    VehicleTypeId = vehicle.VehicleTypeId
-                };
-
-                vehicleDtos.Add(actionTypeDto);
+                vehicleDtos.Add(new VehicleDto().Map(vehicle));
             }
 
             response.Data = vehicleDtos;
@@ -120,13 +111,14 @@ namespace VehicleMaintenance.Business.Concrete
         public ResponseDto GetVehicleById(int id)
         {
             var response = new ResponseDto();
-            var actionType = _vehicleDal.Get(x => x.ID == id && x.IsDeleted == false);
-            if (actionType == null)
+            var vehicle = _vehicleDal.Get(x => x.ID == id && x.IsDeleted == false);
+            if (vehicle == null)
             {
                 response.IsSuccess = false;
                 response.Message = "Aksiyon Tipi bulunamadı.";
                 return response;
             }
+            response.Data = new VehicleDto().Map(vehicle);
             return response;
         }
 
@@ -146,7 +138,7 @@ namespace VehicleMaintenance.Business.Concrete
             existingVehicle.Name = vehicleDto.Name;
             existingVehicle.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingVehicle.ModifyDate = DateTime.Now.TimeOfDay;
-            existingVehicle.VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleTypeId);
+            existingVehicle.VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleType.ID);
             existingVehicle.User = _unitOfWork.GetRepository<User>().Get(p => p.ID == vehicleDto.UserID);
             existingVehicle.PlateNo = vehicleDto.PlateNo;
 

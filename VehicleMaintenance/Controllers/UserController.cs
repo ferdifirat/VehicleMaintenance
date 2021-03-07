@@ -30,7 +30,7 @@ namespace VehicleMaintenance.WebApi.Controllers
 
         [HttpGet]
         [Route("GetUser/{id}")]
-        public ActionResult GetUsers(int id)
+        public ActionResult GetUser(int id)
         {
             var response = _userService.GetUser(id);
 

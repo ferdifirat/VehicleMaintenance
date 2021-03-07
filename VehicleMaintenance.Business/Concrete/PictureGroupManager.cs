@@ -51,6 +51,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Kayıt esnasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new PictureGroupDto().Map(existingPictureGroup);
             return response;
         }
 
@@ -78,6 +79,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Resim grubu silinirken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new PictureGroupDto().Map(pictureGroup);
             return response;
         }
 
@@ -100,6 +102,7 @@ namespace VehicleMaintenance.Business.Concrete
                 var statusDto = new PictureGroupDto()
                 {
                     ID = pictureGroup.ID,
+                    CreateDate = pictureGroup.CreateDate,
                     PictureImage = pictureGroup.PictureImage,
                 };
 
@@ -157,6 +160,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Resim grubu güncellenirken bir hata oluştu lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new PictureGroupDto().Map(existingPictureGroup);
             return response;
         }
     }

@@ -18,11 +18,12 @@ namespace VehicleMaintenance.Business.Concrete
         private readonly IUserSessionService _userSessionService;
         public ActionTypeManager(IActionTypeDal actionTypeDal, IUnitOfWork unitOfWork, IUserSessionService userSessionService)
         {
+            _unitOfWork = unitOfWork;
             _userSessionService = userSessionService;
             _actionTypeDal = actionTypeDal;
-            _unitOfWork = unitOfWork;
+            
         }
-        public ResponseDto AddActionType(ActionTypeDto dto)
+        public ResponseDto AddActionType(AddActionTypeDto dto)
         {
             var response = new ResponseDto();
             var existingActionType = _actionTypeDal.Get(x => x.Name == dto.Name);
@@ -51,12 +52,12 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Kayıt esnasında bir hata oluştu lütfen daha sonra tekrar deneyiniz.";
             }
 
-            response.Data = actionType;
+            response.Data = new ActionTypeDto().Map(actionType);
 
             return response;
         }
 
-        public ResponseDto UpdateActionType(ActionTypeDto actionTypeDto)
+        public ResponseDto UpdateActionType(AddActionTypeDto actionTypeDto)
         {
             var response = new ResponseDto();
 
@@ -70,7 +71,7 @@ namespace VehicleMaintenance.Business.Concrete
             }
 
             existingActionType.ModifyDate = DateTime.Now.TimeOfDay;
-            //existingActionType.ModifiedBy = User
+            existingActionType.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingActionType.Name = actionTypeDto.Name;
 
             _actionTypeDal.Update(existingActionType);
@@ -99,7 +100,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            //actionType.ModifiedBy = Kullanıcı
+            actionType.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             actionType.ModifyDate = DateTime.Now.TimeOfDay;
             actionType.IsDeleted = true;
             _actionTypeDal.Update(actionType);
@@ -125,14 +126,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Aksiyon Tipi bulunamadı.";
                 return response;
             }
-
-            var actionTypeDto = new ActionTypeDto()
-            {
-                ID = actionType.ID,
-                Name = actionType.Name
-            };
-
-            response.Data = actionTypeDto;
+            response.Data = new ActionTypeDto().Map(actionType); ;
             return response;
         }
 
@@ -148,11 +142,11 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Aksiyon tipi bulunamadı.";
                 return response;
             }
-            var actionTypeDtos = new List<ActionTypeDto>();
+            var actionTypeDtos = new List<AddActionTypeDto>();
 
             foreach (var actionType in actionTypeDtos)
             {
-                var actionTypeDto = new ActionTypeDto()
+                var actionTypeDto = new AddActionTypeDto()
                 {
                     ID = actionType.ID,
                     Name = actionType.Name,

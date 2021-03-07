@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VehicleMaintenance.Business.Abstract;
+using VehicleMaintenance.Core.DataAccess;
 using VehicleMaintenance.Core.Service;
 using VehicleMaintenance.DataAccess.Abstract;
 using VehicleMaintenance.Entity.Concrete;
@@ -13,8 +14,12 @@ namespace VehicleMaintenance.Business.Concrete
     public class StatusManager : IStatusService
     {
         private readonly IStatusDal _statusDal;
-        public StatusManager(IStatusDal statusDal)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserSessionService _userSessionService;
+        public StatusManager(IStatusDal statusDal, IUnitOfWork unitOfWork, IUserSessionService userSessionService)
         {
+            _unitOfWork = unitOfWork;
+            _userSessionService = userSessionService;
             _statusDal = statusDal;
         }
         public ResponseDto AddStatus(StatusDto statusDto)
@@ -32,10 +37,8 @@ namespace VehicleMaintenance.Business.Concrete
             var status = new Status()
             {
                 CreateDate = DateTime.Now.TimeOfDay,
-                //CreatedBy = Userstatus,
+                CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
                 IsDeleted = false,
-                //ModifiedBy = User,
-                //ModifyDate = TimeSpan,
                 Name = statusDto.Name,
             };
 
@@ -63,7 +66,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            //status.ModifiedBy = Kullanıcı
+            status.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             status.ModifyDate = DateTime.Now.TimeOfDay;
             status.IsDeleted = true;
             _statusDal.Update(status);
@@ -114,7 +117,7 @@ namespace VehicleMaintenance.Business.Concrete
             if (status == null)
             {
                 response.IsSuccess = false;
-                response.Message = "History bulunamadı.";
+                response.Message = "Durum bulunamadı.";
                 return response;
             }
 
@@ -142,7 +145,7 @@ namespace VehicleMaintenance.Business.Concrete
             }
 
             existingStatus.Name = statusDto.Name;
-            //existingStatus.ModifiedBy = User
+            existingStatus.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingStatus.ModifyDate = DateTime.Now.TimeOfDay;
 
             _statusDal.Update(existingStatus);

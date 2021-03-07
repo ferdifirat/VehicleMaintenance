@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VehicleMaintenance.Business.Abstract;
 using VehicleMaintenance.Core.DataAccess;
@@ -14,9 +15,11 @@ namespace VehicleMaintenance.Business.Concrete
     {
         private readonly IVehicleDal _vehicleDal;
         private readonly IUnitOfWork _unitOfWork;
-        public VehicleManager(IVehicleDal vehicleDal, IUnitOfWork unitOfWork)
+        private readonly IUserSessionService _userSessionService;
+        public VehicleManager(IVehicleDal vehicleDal, IUnitOfWork unitOfWork, IUserSessionService userSessionService)
         {
             _vehicleDal = vehicleDal;
+            _userSessionService = userSessionService;
             _unitOfWork = unitOfWork;
         }
         public ResponseDto AddVehicle(VehicleDto vehicleDto)
@@ -34,10 +37,8 @@ namespace VehicleMaintenance.Business.Concrete
             var vehicle = new Vehicle()
             {
                 CreateDate = DateTime.Now.TimeOfDay,
-                //CreatedBy = Userstatus,
+                CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
                 IsDeleted = false,
-                //ModifiedBy = User,
-                //ModifyDate = TimeSpan,
                 VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleTypeId),
                 User = _unitOfWork.GetRepository<User>().Get(p => p.ID == vehicleDto.UserID),
                 PlateNo = vehicleDto.PlateNo,
@@ -69,7 +70,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            //vehicle.ModifiedBy = Kullanıcı
+            vehicle.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             vehicle.ModifyDate = DateTime.Now.TimeOfDay;
             vehicle.IsDeleted = true;
             _vehicleDal.Update(vehicle);
@@ -86,12 +87,47 @@ namespace VehicleMaintenance.Business.Concrete
 
         public ResponseDto GetAllVehicle()
         {
-            throw new NotImplementedException();
+            var response = new ResponseDto();
+
+            var vehicles = _vehicleDal.GetList();
+
+            if (vehicles == null || !vehicles.Any())
+            {
+                response.IsSuccess = false;
+                response.Message = "Araç bulunamadı.";
+                return response;
+            }
+            var vehicleDtos = new List<VehicleDto>();
+
+            foreach (var vehicle in vehicleDtos)
+            {
+                var actionTypeDto = new VehicleDto()
+                {
+                    ID = vehicle.ID,
+                    Name = vehicle.Name,
+                    PlateNo = vehicle.PlateNo,
+                    UserID = vehicle.UserID,
+                    VehicleTypeId = vehicle.VehicleTypeId
+                };
+
+                vehicleDtos.Add(actionTypeDto);
+            }
+
+            response.Data = vehicleDtos;
+            return response;
         }
 
         public ResponseDto GetVehicleById(int id)
         {
-            throw new NotImplementedException();
+            var response = new ResponseDto();
+            var actionType = _vehicleDal.Get(x => x.ID == id && x.IsDeleted == false);
+            if (actionType == null)
+            {
+                response.IsSuccess = false;
+                response.Message = "Aksiyon Tipi bulunamadı.";
+                return response;
+            }
+            return response;
         }
 
         public ResponseDto UpdateVehicle(VehicleDto vehicleDto)
@@ -108,7 +144,7 @@ namespace VehicleMaintenance.Business.Concrete
             }
 
             existingVehicle.Name = vehicleDto.Name;
-            //existingVehicleType.ModifiedBy = User
+            existingVehicle.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingVehicle.ModifyDate = DateTime.Now.TimeOfDay;
             existingVehicle.VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleTypeId);
             existingVehicle.User = _unitOfWork.GetRepository<User>().Get(p => p.ID == vehicleDto.UserID);

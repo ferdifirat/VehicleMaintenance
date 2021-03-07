@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VehicleMaintenance.Business.Abstract;
+using VehicleMaintenance.Core.DataAccess;
 using VehicleMaintenance.Core.Service;
 using VehicleMaintenance.DataAccess.Abstract;
 using VehicleMaintenance.Entity.Concrete;
@@ -13,8 +14,12 @@ namespace VehicleMaintenance.Business.Concrete
     public class VehicleTypeManager : IVehicleTypeService
     {
         private readonly IVehicleTypeDal _vehicleTypeDal;
-        public VehicleTypeManager(IVehicleTypeDal vehicleType)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserSessionService _userSessionService;
+        public VehicleTypeManager(IVehicleTypeDal vehicleType, IUnitOfWork unitOfWork, IUserSessionService userSessionService)
         {
+            _unitOfWork = unitOfWork;
+            _userSessionService = userSessionService;
             _vehicleTypeDal = vehicleType;
         }
         public ResponseDto AddVehicleType(VehicleTypeDto vehicleTypeDto)
@@ -32,10 +37,8 @@ namespace VehicleMaintenance.Business.Concrete
             var vehicleType = new VehicleType()
             {
                 CreateDate = DateTime.Now.TimeOfDay,
-                //CreatedBy = Userstatus,
+                CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
                 IsDeleted = false,
-                //ModifiedBy = User,
-                //ModifyDate = TimeSpan,
                 Name = vehicleTypeDto.Name,
             };
 
@@ -63,7 +66,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            //vehicleType.ModifiedBy = Kullanıcı
+            vehicleType.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID,
             vehicleType.ModifyDate = DateTime.Now.TimeOfDay;
             vehicleType.IsDeleted = true;
             _vehicleTypeDal.Update(vehicleType);
@@ -97,7 +100,7 @@ namespace VehicleMaintenance.Business.Concrete
                 var maintenanceDto = new VehicleTypeDto()
                 {
                     ID = vehicleType.ID,
-                    Name= vehicleType.Name,
+                    Name = vehicleType.Name,
                 };
 
                 vehicleTypeDtos.Add(maintenanceDto);
@@ -142,7 +145,7 @@ namespace VehicleMaintenance.Business.Concrete
             }
 
             existingVehicleType.Name = vehicleTypeDto.Name;
-            //existingVehicleType.ModifiedBy = User
+            existingVehicleType.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID,
             existingVehicleType.ModifyDate = DateTime.Now.TimeOfDay;
 
             _vehicleTypeDal.Update(existingVehicleType);

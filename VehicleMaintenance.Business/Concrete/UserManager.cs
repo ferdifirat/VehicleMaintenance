@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using VehicleMaintenance.Business.Abstract;
 using VehicleMaintenance.Business.CustomExtensions;
+using VehicleMaintenance.Core.DataAccess;
 using VehicleMaintenance.Core.Service;
 using VehicleMaintenance.DataAccess.Abstract;
 using VehicleMaintenance.Entity.Concrete;
@@ -15,12 +16,18 @@ namespace VehicleMaintenance.Business.Concrete
     {
         private readonly IUserDal _userDal;
         private readonly ITokenService _tokenService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserSessionService _userSessionService;
 
         public UserManager(
             IUserDal userDal,
-            ITokenService tokenService
+            ITokenService tokenService,
+            IUnitOfWork unitOfWork, 
+            IUserSessionService userSessionService
             )
         {
+            _unitOfWork = unitOfWork;
+            _userSessionService = userSessionService;
             _userDal = userDal;
             _tokenService = tokenService;
         }
@@ -74,7 +81,10 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            _userDal.Delete(user);
+            user.IsDeleted = true;
+            user.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
+            user.ModifyDate = DateTime.Now.TimeOfDay;
+            _userDal.Update(user);
             var savingUser = _userDal.SaveChanges();
 
             if (!savingUser)

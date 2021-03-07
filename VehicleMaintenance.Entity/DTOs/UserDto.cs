@@ -15,5 +15,15 @@ namespace VehicleMaintenance.Entity.DTOs
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
         public string profilepicture { get; set; }
+
+
+        public UserDto Map(Concrete.User user)
+        {
+            this.ID = user.ID;
+            this.FirstName = user.FirstName;
+
+
+            return this;
+        }
     }
 }

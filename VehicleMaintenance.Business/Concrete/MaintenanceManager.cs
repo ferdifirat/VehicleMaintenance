@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VehicleMaintenance.Business.Abstract;
 using VehicleMaintenance.Core.DataAccess;
@@ -14,8 +15,10 @@ namespace VehicleMaintenance.Business.Concrete
     {
         private readonly IMaintenanceDal _maintenanceDal;
         private readonly IUnitOfWork _unitOfWork;
-        public MaintenanceManager(IMaintenanceDal maintenanceDal, IUnitOfWork unitOfWork)
+        private readonly IUserSessionService _userSessionService;
+        public MaintenanceManager(IMaintenanceDal maintenanceDal, IUnitOfWork unitOfWork, IUserSessionService userSessionService)
         {
+            _userSessionService = userSessionService;
             _maintenanceDal = maintenanceDal;
             _unitOfWork = unitOfWork;
         }
@@ -26,19 +29,17 @@ namespace VehicleMaintenance.Business.Concrete
             var maintenance = new Maintenance()
             {
                 CreateDate = DateTime.Now.TimeOfDay,
-                //CreatedBy = Userstatus,
+                CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
                 IsDeleted = false,
-                //ModifiedBy = User,
-                //ModifyDate = TimeSpan,
                 Description = maintenanceDto.Description,
                 ExpectedTimeToFix = maintenanceDto.ExpectedTimeToFix,
                 LocationLatitude = maintenanceDto.LocationLatitude,
                 LocationLongitude = maintenanceDto.LocationLongitude,
-                PictureGroup = _unitOfWork.GetRepository<PictureGroup>().Get(p => p.ID == maintenanceDto.PictureGroupID),
+                PictureGroup = _unitOfWork.GetRepository<PictureGroup>().Get(p => p.ID == maintenanceDto.PictureGroup.ID),
                 ResponsibleUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.ResponsibleUserID),
-                Status = _unitOfWork.GetRepository<Status>().Get(p => p.ID == maintenanceDto.StatusID),
-                Vehicle = _unitOfWork.GetRepository<Vehicle>().Get(p => p.ID == maintenanceDto.VehicleID),
-                User = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.UserId),
+                Status = _unitOfWork.GetRepository<Status>().Get(p => p.ID == maintenanceDto.Status.ID),
+                Vehicle = _unitOfWork.GetRepository<Vehicle>().Get(p => p.ID == maintenanceDto.Vehicle.ID),
+                User = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.User.ID),
             };
 
             _maintenanceDal.Add(maintenance);
@@ -66,7 +67,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            //maintenance.ModifiedBy = "";
+            maintenance.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             maintenance.ModifyDate = DateTime.Now.TimeOfDay;
             maintenance.IsDeleted = true;
             _maintenanceDal.Update(maintenance);
@@ -84,12 +85,49 @@ namespace VehicleMaintenance.Business.Concrete
 
         public ResponseDto GetAllMaintenance()
         {
-            throw new NotImplementedException();
+            var response = new ResponseDto();
+
+            var maintenances = _maintenanceDal.GetList();
+
+            if (maintenances == null || !maintenances.Any())
+            {
+                response.IsSuccess = false;
+                response.Message = "Aksiyon tipi bulunamadı.";
+                return response;
+            }
+            var maintenanceDtos = new List<MaintenanceDto>();
+
+            foreach (var maintenanceDto in maintenanceDtos)
+            {
+                var actionTypeDto = new MaintenanceDto()
+                {
+                    ID = maintenanceDto.ID,
+                    Description = maintenanceDto.Description,
+                    ExpectedTimeToFix = maintenanceDto.ExpectedTimeToFix,
+                    LocationLatitude = maintenanceDto.LocationLatitude,
+                    LocationLongitude = maintenanceDto.LocationLongitude,
+                    PictureGroup = maintenanceDto.PictureGroup
+                };
+
+                maintenanceDtos.Add(actionTypeDto);
+            }
+
+            response.Data = maintenanceDtos;
+            return response;
         }
 
         public ResponseDto GetMaintenanceById(int id)
         {
-            throw new NotImplementedException();
+            var response = new ResponseDto();
+            var maintenance = _maintenanceDal.Get(x => x.ID == id && x.IsDeleted == false);
+            if (maintenance == null)
+            {
+                response.IsSuccess = false;
+                response.Message = "Bakım bulunamadı.";
+                return response;
+            }
+
+            return response;
         }
 
         public ResponseDto UpdateMaintenance(MaintenanceDto maintenanceDto)
@@ -109,12 +147,12 @@ namespace VehicleMaintenance.Business.Concrete
             existingMaintenance.ExpectedTimeToFix = maintenanceDto.ExpectedTimeToFix;
             existingMaintenance.LocationLatitude = maintenanceDto.LocationLatitude;
             existingMaintenance.LocationLongitude = maintenanceDto.LocationLongitude;
-            existingMaintenance.PictureGroup = _unitOfWork.GetRepository<PictureGroup>().Get(p => p.ID == maintenanceDto.PictureGroupID);
-            existingMaintenance.ResponsibleUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.ResponsibleUserID);
-            existingMaintenance.Status = _unitOfWork.GetRepository<Status>().Get(p => p.ID == maintenanceDto.StatusID);
-            existingMaintenance.Vehicle = _unitOfWork.GetRepository<Vehicle>().Get(p => p.ID == maintenanceDto.VehicleID);
-            existingMaintenance.User = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.UserId);
-            //existingMaintenance.ModifiedBy = User
+            existingMaintenance.PictureGroup = _unitOfWork.GetRepository<PictureGroup>().Get(p => p.ID == maintenanceDto.PictureGroup.ID);
+            existingMaintenance.ResponsibleUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.ResponsibleUser.ID);
+            existingMaintenance.Status = _unitOfWork.GetRepository<Status>().Get(p => p.ID == maintenanceDto.Status.ID);
+            existingMaintenance.Vehicle = _unitOfWork.GetRepository<Vehicle>().Get(p => p.ID == maintenanceDto.Vehicle.ID);
+            existingMaintenance.User = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.User.ID);
+            existingMaintenance.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingMaintenance.ModifyDate = DateTime.Now.TimeOfDay;
 
             _maintenanceDal.Update(existingMaintenance);
@@ -123,7 +161,7 @@ namespace VehicleMaintenance.Business.Concrete
             if (!savingStatus)
             {
                 response.IsSuccess = false;
-                response.Message = "Durum güncellenirken bir hata oluştu lütfen daha sonra tekrar deneyiniz.";
+                response.Message = "Bakım güncellenirken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
             return response;

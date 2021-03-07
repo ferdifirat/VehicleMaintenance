@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VehicleMaintenance.Business.Abstract;
+using VehicleMaintenance.Core.DataAccess;
 using VehicleMaintenance.Core.Service;
 using VehicleMaintenance.DataAccess.Abstract;
 using VehicleMaintenance.Entity.Concrete;
@@ -13,9 +14,13 @@ namespace VehicleMaintenance.Business.Concrete
     public class PictureGroupManager : IPictureGroupService
     {
         private readonly IPictureGroupDal _pictureGroupDal;
-        public PictureGroupManager(IPictureGroupDal pictureGroupDal)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserSessionService _userSessionService;
+        public PictureGroupManager(IPictureGroupDal pictureGroupDal, IUnitOfWork unitOfWork, IUserSessionService userSessionService)
         {
             _pictureGroupDal = pictureGroupDal;
+            _userSessionService = userSessionService;
+            _unitOfWork = unitOfWork;
         }
         public ResponseDto AddPictureGroup(PictureGroupDto pictureGroupDto)
         {
@@ -32,10 +37,8 @@ namespace VehicleMaintenance.Business.Concrete
             var status = new PictureGroup()
             {
                 CreateDate = DateTime.Now.TimeOfDay,
-                //CreatedBy = Userstatus,
+                CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
                 IsDeleted = false,
-                //ModifiedBy = User,
-                //ModifyDate = TimeSpan,
                 PictureImage = pictureGroupDto.PictureImage
             };
 
@@ -63,7 +66,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            //pictureGroup.ModifiedBy = "";
+            pictureGroup.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             pictureGroup.ModifyDate = DateTime.Now.TimeOfDay;
             pictureGroup.IsDeleted = true;
             _pictureGroupDal.Update(pictureGroup);
@@ -142,7 +145,7 @@ namespace VehicleMaintenance.Business.Concrete
             }
 
             existingPictureGroup.PictureImage = pictureGroupDto.PictureImage;
-            //existingStatus.ModifiedBy = User
+            existingPictureGroup.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingPictureGroup.ModifyDate = DateTime.Now.TimeOfDay;
 
             _pictureGroupDal.Update(existingPictureGroup);

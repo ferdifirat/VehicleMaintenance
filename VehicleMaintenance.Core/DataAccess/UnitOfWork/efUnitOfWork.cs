@@ -10,13 +10,11 @@ namespace VehicleMaintenance.Core.DataAccess.UnitOfWork
     public class efUnitOfWork : IUnitOfWork
     {
         private readonly DbContext _context;
-        private readonly ILogger _logger;
         private IDbContextTransaction _transation;
         private bool _disposed;
-        public efUnitOfWork(DbContext context, ILogger<efUnitOfWork> logger)
+        public efUnitOfWork(DbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public IEntityRepository<T> GetRepository<T>() where T : class, IEntity, new()
@@ -33,7 +31,6 @@ namespace VehicleMaintenance.Core.DataAccess.UnitOfWork
             }
             catch (Exception exp)
             {
-                _logger.LogError(exp.ToString());
             }
 
             return result;
@@ -49,7 +46,6 @@ namespace VehicleMaintenance.Core.DataAccess.UnitOfWork
             }
             catch (Exception exp)
             {
-                _logger.LogError(exp.ToString());
             }
 
             return result;
@@ -71,7 +67,6 @@ namespace VehicleMaintenance.Core.DataAccess.UnitOfWork
             catch (Exception exp)
             {
                 transaction.Rollback();
-                _logger.LogError(exp.ToString());
             }
 
             return result;
@@ -103,7 +98,6 @@ namespace VehicleMaintenance.Core.DataAccess.UnitOfWork
             }
             catch (Exception exp)
             {
-                _logger.LogError(exp.ToString());
             }
 
             return result;

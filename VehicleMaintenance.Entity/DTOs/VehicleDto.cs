@@ -16,8 +16,9 @@ namespace VehicleMaintenance.Entity.DTOs
         public string PlateNo { get; set; }
         public int UserID { get; set; }
         public string Name { get; set; }
-        public VehicleTypeDto VehicleType{ get; set; }
-        public UserDto User { get; set; }
+        public int VehicleTypeID { get; set; }
+        public virtual VehicleTypeDto VehicleType{ get; set; }
+        public virtual UserDto User { get; set; }
 
         public VehicleDto Map(Vehicle type)
         {

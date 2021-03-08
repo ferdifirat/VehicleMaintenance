@@ -14,6 +14,8 @@ namespace VehicleMaintenance.Entity.DTOs
         public TimeSpan ModifyDate { get; set; }
         public int ModifiedBy { get; set; }
         public bool IsDeleted { get; set; }
+        public int ActionTypeID { get; set; }
+        public int MaintenanceID { get; set; }
         public MaintenanceDto Maintenance { get; set; }
         public ActionTypeDto ActionType { get; set; }
         public string Text { get; set; }

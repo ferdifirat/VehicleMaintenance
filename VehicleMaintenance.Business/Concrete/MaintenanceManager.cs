@@ -42,11 +42,11 @@ namespace VehicleMaintenance.Business.Concrete
                 ExpectedTimeToFix = maintenanceDto.ExpectedTimeToFix,
                 LocationLatitude = maintenanceDto.LocationLatitude,
                 LocationLongitude = maintenanceDto.LocationLongitude,
-                PictureGroup = _unitOfWork.GetRepository<PictureGroup>().Get(p => p.ID == maintenanceDto.PictureGroup.ID),
-                ResponsibleUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.ResponsibleUser.ID),
-                Status = _unitOfWork.GetRepository<Status>().Get(p => p.ID == maintenanceDto.Status.ID),
-                Vehicle = _unitOfWork.GetRepository<Vehicle>().Get(p => p.ID == maintenanceDto.Vehicle.ID),
-                User = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.User.ID),
+                PictureGroup = _unitOfWork.GetRepository<PictureGroup>().Get(p => p.ID == maintenanceDto.PictureGroupID),
+                ResponsibleUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.ResponsibleUserID),
+                Status = _unitOfWork.GetRepository<Status>().Get(p => p.ID == maintenanceDto.StatusID),
+                Vehicle = _unitOfWork.GetRepository<Vehicle>().Get(p => p.ID == maintenanceDto.VehicleID),
+                User = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.UserID),
             };
 
             _maintenanceDal.Add(maintenance);
@@ -154,11 +154,11 @@ namespace VehicleMaintenance.Business.Concrete
             existingMaintenance.ExpectedTimeToFix = maintenanceDto.ExpectedTimeToFix;
             existingMaintenance.LocationLatitude = maintenanceDto.LocationLatitude;
             existingMaintenance.LocationLongitude = maintenanceDto.LocationLongitude;
-            existingMaintenance.PictureGroup = _unitOfWork.GetRepository<PictureGroup>().Get(p => p.ID == maintenanceDto.PictureGroup.ID);
-            existingMaintenance.ResponsibleUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.ResponsibleUser.ID);
-            existingMaintenance.Status = _unitOfWork.GetRepository<Status>().Get(p => p.ID == maintenanceDto.Status.ID);
-            existingMaintenance.Vehicle = _unitOfWork.GetRepository<Vehicle>().Get(p => p.ID == maintenanceDto.Vehicle.ID);
-            existingMaintenance.User = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.User.ID);
+            existingMaintenance.PictureGroup = _unitOfWork.GetRepository<PictureGroup>().Get(p => p.ID == maintenanceDto.PictureGroupID);
+            existingMaintenance.ResponsibleUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.ResponsibleUserID);
+            existingMaintenance.Status = _unitOfWork.GetRepository<Status>().Get(p => p.ID == maintenanceDto.StatusID);
+            existingMaintenance.Vehicle = _unitOfWork.GetRepository<Vehicle>().Get(p => p.ID == maintenanceDto.VehicleID);
+            existingMaintenance.User = _unitOfWork.GetRepository<User>().Get(p => p.ID == maintenanceDto.UserID);
             existingMaintenance.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingMaintenance.ModifyDate = DateTime.Now.TimeOfDay;
 

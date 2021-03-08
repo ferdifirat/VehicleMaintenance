@@ -48,12 +48,12 @@ namespace VehicleMaintenance.Business.Concrete
                 CreateDate = DateTime.Now.TimeOfDay,
                 CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
                 IsDeleted = false,
-                Text = existingMaintenanceHistory.Text,
-                Maintenance = _unitOfWork.GetRepository<Maintenance>().Get(p => p.ID == existingMaintenanceHistory.Maintenance.ID),
-                ActionType = _unitOfWork.GetRepository<ActionType>().Get(p => p.ID == existingMaintenanceHistory.ActionType.ID),
+                Text = maintenanceHistoryDto.Text,
+                Maintenance = _unitOfWork.GetRepository<Maintenance>().Get(p => p.ID == maintenanceHistoryDto.MaintenanceID),
+                ActionType = _unitOfWork.GetRepository<ActionType>().Get(p => p.ID == maintenanceHistoryDto.ActionTypeID),
             };
 
-            _maintenanceHistoryDal.Add(existingMaintenanceHistory);
+            _maintenanceHistoryDal.Add(maintenanceHistory);
             var savingActionType = _maintenanceHistoryDal.SaveChanges();
 
             if (!savingActionType)
@@ -62,7 +62,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Kayıt esnasında bir hata oluştu lütfen daha sonra tekrar deneyiniz.";
             }
 
-            response.Data = new MaintenanceHistoryDto().Map(existingMaintenanceHistory);
+            response.Data = new MaintenanceHistoryDto().Map(maintenanceHistory);
             return response;
         }
 
@@ -154,10 +154,10 @@ namespace VehicleMaintenance.Business.Concrete
             }
 
             existingMaintenanceHistory.Text = dto.Text;
-            existingMaintenanceHistory.Maintenance = _unitOfWork.GetRepository<Maintenance>().Get(p => p.ID == dto.Maintenance.ID);
+            existingMaintenanceHistory.Maintenance = _unitOfWork.GetRepository<Maintenance>().Get(p => p.ID == dto.MaintenanceID);
             existingMaintenanceHistory.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingMaintenanceHistory.ModifyDate = DateTime.Now.TimeOfDay;
-            existingMaintenanceHistory.ActionType = _unitOfWork.GetRepository<ActionType>().Get(p => p.ID == dto.ActionType.ID);
+            existingMaintenanceHistory.ActionType = _unitOfWork.GetRepository<ActionType>().Get(p => p.ID == dto.ActionTypeID);
 
             _maintenanceHistoryDal.Update(existingMaintenanceHistory);
             var savingStatus = _maintenanceHistoryDal.SaveChanges();

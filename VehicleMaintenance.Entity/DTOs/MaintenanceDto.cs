@@ -18,10 +18,15 @@ namespace VehicleMaintenance.Entity.DTOs
         public string LocationLongitude { get; set; }
         public string LocationLatitude { get; set; }
         public virtual VehicleDto Vehicle { get; set; }
+        public int VehicleID { get; set; }
         public virtual UserDto User { get; set; }
+        public int UserID { get; set; }
         public virtual UserDto ResponsibleUser { get; set; }
+        public int ResponsibleUserID { get; set; }
         public virtual PictureGroupDto PictureGroup { get; set; }
+        public int PictureGroupID { get; set; }
         public virtual StatusDto Status { get; set; }
+        public int StatusID { get; set; }
 
 
         public MaintenanceDto Map(Concrete.Maintenance type)

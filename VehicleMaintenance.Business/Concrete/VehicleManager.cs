@@ -47,7 +47,7 @@ namespace VehicleMaintenance.Business.Concrete
                 CreateDate = DateTime.Now.TimeOfDay,
                 CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
                 IsDeleted = false,
-                VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleType.ID),
+                VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleTypeID),
                 User = _unitOfWork.GetRepository<User>().Get(p => p.ID == vehicleDto.UserID),
                 PlateNo = vehicleDto.PlateNo,
                 Name = vehicleDto.Name,
@@ -61,7 +61,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.IsSuccess = false;
                 response.Message = "Kayıt esnasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
-
+            response.Data = new VehicleDto().Map(vehicle);
             return response;
         }
 
@@ -151,7 +151,7 @@ namespace VehicleMaintenance.Business.Concrete
             existingVehicle.Name = vehicleDto.Name;
             existingVehicle.ModifiedBy = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()).ID;
             existingVehicle.ModifyDate = DateTime.Now.TimeOfDay;
-            existingVehicle.VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleType.ID);
+            existingVehicle.VehicleType = _unitOfWork.GetRepository<VehicleType>().Get(p => p.ID == vehicleDto.VehicleTypeID);
             existingVehicle.User = _unitOfWork.GetRepository<User>().Get(p => p.ID == vehicleDto.UserID);
             existingVehicle.PlateNo = vehicleDto.PlateNo;
 

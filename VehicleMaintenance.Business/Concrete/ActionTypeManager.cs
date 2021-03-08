@@ -26,7 +26,7 @@ namespace VehicleMaintenance.Business.Concrete
         public ResponseDto AddActionType(AddActionTypeDto dto)
         {
             var response = new ResponseDto();
-            var existingActionType = _actionTypeDal.Get(x => x.Name == dto.Name);
+            var existingActionType = _actionTypeDal.Get(x => x.Name == dto.Name && x.IsDeleted == false);
 
             if (existingActionType != null)
             {
@@ -53,7 +53,6 @@ namespace VehicleMaintenance.Business.Concrete
             }
 
             response.Data = new ActionTypeDto().Map(actionType);
-
             return response;
         }
 
@@ -61,7 +60,7 @@ namespace VehicleMaintenance.Business.Concrete
         {
             var response = new ResponseDto();
 
-            var existingActionType = _actionTypeDal.Get(p => p.ID == actionTypeDto.ID);
+            var existingActionType = _actionTypeDal.Get(p => p.ID == actionTypeDto.ID && p.IsDeleted == false);
 
             if (existingActionType == null)
             {
@@ -92,7 +91,7 @@ namespace VehicleMaintenance.Business.Concrete
         {
             var response = new ResponseDto();
 
-            var actionType = _actionTypeDal.Get(p => p.ID == id);
+            var actionType = _actionTypeDal.Get(p => p.ID == id && p.IsDeleted == false);
 
             if (actionType == null)
             {
@@ -137,7 +136,7 @@ namespace VehicleMaintenance.Business.Concrete
         {
             var response = new ResponseDto();
 
-            var actionTypes = _actionTypeDal.GetList();
+            var actionTypes = _actionTypeDal.GetList(x=>x.IsDeleted == false);
 
             if (actionTypes == null || !actionTypes.Any())
             {

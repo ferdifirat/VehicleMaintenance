@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VehicleMaintenance.Business.Abstract;
+using VehicleMaintenance.Business.CustomExtensions;
 using VehicleMaintenance.Entity.DTOs;
 
 namespace VehicleMaintenance.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(TokenAttribute))]
     public class MaintenanceController : ControllerBase
     {
         private readonly IMaintenanceService _maintenanceService;

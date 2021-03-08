@@ -43,7 +43,6 @@ namespace VehicleMaintenance.Business.Concrete
                 User = _unitOfWork.GetRepository<User>().Get(p => p.ID == vehicleDto.UserID),
                 PlateNo = vehicleDto.PlateNo,
                 Name = vehicleDto.Name,
-
             };
 
             _vehicleDal.Add(vehicle);
@@ -151,6 +150,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Araç güncellenirken bir hata oluştu lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new VehicleDto().Map(existingVehicle);
             return response;
         }
     }

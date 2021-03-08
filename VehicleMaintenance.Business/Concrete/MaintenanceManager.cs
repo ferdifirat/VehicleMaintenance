@@ -59,7 +59,7 @@ namespace VehicleMaintenance.Business.Concrete
         {
             var response = new ResponseDto();
 
-            var maintenance = _maintenanceDal.Get(p => p.ID == id);
+            var maintenance = _maintenanceDal.Get(p => p.ID == id && p.IsDeleted == false);
 
             if (maintenance == null)
             {
@@ -89,7 +89,7 @@ namespace VehicleMaintenance.Business.Concrete
         {
             var response = new ResponseDto();
 
-            var maintenances = _maintenanceDal.GetList();
+            var maintenances = _maintenanceDal.GetList(x=> x.IsDeleted == false);
 
             if (maintenances == null || !maintenances.Any())
             {
@@ -99,19 +99,10 @@ namespace VehicleMaintenance.Business.Concrete
             }
             var maintenanceDtos = new List<MaintenanceDto>();
 
-            foreach (var maintenanceDto in maintenanceDtos)
+            foreach (var maintenance in maintenances)
             {
-                var actionTypeDto = new MaintenanceDto()
-                {
-                    ID = maintenanceDto.ID,
-                    Description = maintenanceDto.Description,
-                    ExpectedTimeToFix = maintenanceDto.ExpectedTimeToFix,
-                    LocationLatitude = maintenanceDto.LocationLatitude,
-                    LocationLongitude = maintenanceDto.LocationLongitude,
-                    PictureGroup = maintenanceDto.PictureGroup
-                };
 
-                maintenanceDtos.Add(actionTypeDto);
+                maintenanceDtos.Add(new MaintenanceDto().Map(maintenance));
             }
 
             response.Data = maintenanceDtos;
@@ -128,7 +119,8 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Bakım bulunamadı.";
                 return response;
             }
-            response.Data = maintenance;
+
+            response.Data = new MaintenanceDto().Map(maintenance);
             return response;
         }
 
@@ -136,7 +128,7 @@ namespace VehicleMaintenance.Business.Concrete
         {
             var response = new ResponseDto();
 
-            var existingMaintenance = _maintenanceDal.Get(p => p.ID == maintenanceDto.ID);
+            var existingMaintenance = _maintenanceDal.Get(p => p.ID == maintenanceDto.ID && p.IsDeleted == false);
 
             if (existingMaintenance == null)
             {

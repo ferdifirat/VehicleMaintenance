@@ -51,7 +51,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Kayıt esnasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
-            response.Data = new StatusDto().Map(existingStatus);
+            response.Data = new StatusDto().Map(status);
             return response;
         }
 
@@ -99,13 +99,7 @@ namespace VehicleMaintenance.Business.Concrete
 
             foreach (var status in allStatus)
             {
-                var statusDto = new StatusDto()
-                {
-                    ID = status.ID,
-                    Name= status.Name,
-                };
-
-                statusDtos.Add(statusDto);
+                statusDtos.Add(new StatusDto().Map(status));
             }
 
             response.Data = statusDtos;
@@ -123,13 +117,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            var statusDto = new StatusDto()
-            {
-                ID = status.ID,
-                Name = status.Name
-            };
-
-            response.Data = statusDto;
+            response.Data = new StatusDto().Map(status);
             return response;
         }
 

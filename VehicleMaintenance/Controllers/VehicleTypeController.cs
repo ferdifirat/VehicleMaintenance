@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VehicleMaintenance.Business.Abstract;
+using VehicleMaintenance.Business.CustomExtensions;
 using VehicleMaintenance.Entity.DTOs;
 
 namespace VehicleMaintenance.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(TokenAttribute))]
     public class VehicleTypeController : ControllerBase
     {
         private readonly IVehicleTypeService _vehicleTypeService;
@@ -39,7 +41,7 @@ namespace VehicleMaintenance.WebApi.Controllers
 
         [HttpPost]
         [Route("AddVehicleType")]
-        public ActionResult AddVehicleType(VehicleTypeDto vehicleType)
+        public ActionResult AddVehicleType(AddVehicleTypeDto vehicleType)
         {
             var response = _vehicleTypeService.AddVehicleType(vehicleType);
 

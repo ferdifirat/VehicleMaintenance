@@ -5,6 +5,14 @@ using VehicleMaintenance.Entity.Concrete;
 
 namespace VehicleMaintenance.Entity.DTOs
 {
+
+    public class AddVehicleTypeDto
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+
+
+    }
     public class VehicleTypeDto
     {
         public int ID { get; set; }

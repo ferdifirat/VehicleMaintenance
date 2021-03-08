@@ -34,7 +34,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            var status = new PictureGroup()
+            var pictureGroup = new PictureGroup()
             {
                 CreateDate = DateTime.Now.TimeOfDay,
                 CreatedByUser = _unitOfWork.GetRepository<User>().Get(p => p.ID == _userSessionService.GetUserId()),
@@ -42,7 +42,7 @@ namespace VehicleMaintenance.Business.Concrete
                 PictureImage = pictureGroupDto.PictureImage
             };
 
-            _pictureGroupDal.Add(status);
+            _pictureGroupDal.Add(pictureGroup);
             var savingPictureGroup = _pictureGroupDal.SaveChanges();
 
             if (!savingPictureGroup)
@@ -51,7 +51,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Kayıt esnasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
-            response.Data = new PictureGroupDto().Map(existingPictureGroup);
+            response.Data = new PictureGroupDto().Map(pictureGroup);
             return response;
         }
 
@@ -99,14 +99,7 @@ namespace VehicleMaintenance.Business.Concrete
 
             foreach (var pictureGroup in allPictureGroup)
             {
-                var statusDto = new PictureGroupDto()
-                {
-                    ID = pictureGroup.ID,
-                    CreateDate = pictureGroup.CreateDate,
-                    PictureImage = pictureGroup.PictureImage,
-                };
-
-                pictureGroupDtos.Add(statusDto);
+                pictureGroupDtos.Add(new PictureGroupDto().Map(pictureGroup));
             }
 
             response.Data = pictureGroupDtos;
@@ -124,13 +117,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            var pictureGroupDto = new PictureGroupDto()
-            {
-                ID = pictureGroup.ID,
-                PictureImage = pictureGroup.PictureImage
-            };
-
-            response.Data = pictureGroupDto;
+            response.Data = new PictureGroupDto().Map(pictureGroup);
             return response;
         }
 

@@ -22,7 +22,7 @@ namespace VehicleMaintenance.Business.Concrete
             _userSessionService = userSessionService;
             _vehicleTypeDal = vehicleType;
         }
-        public ResponseDto AddVehicleType(VehicleTypeDto vehicleTypeDto)
+        public ResponseDto AddVehicleType(AddVehicleTypeDto vehicleTypeDto)
         {
             var response = new ResponseDto();
             var existingVehicleType = _vehicleTypeDal.Get(x => x.Name == vehicleTypeDto.Name);
@@ -51,6 +51,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Kayıt esnasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new VehicleTypeDto().Map(vehicleType);
             return response;
         }
 
@@ -78,6 +79,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Araç Tipi silinirken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new VehicleTypeDto().Map(vehicleType);
             return response;
         }
 
@@ -97,13 +99,7 @@ namespace VehicleMaintenance.Business.Concrete
 
             foreach (var vehicleType in allVehicleType)
             {
-                var maintenanceDto = new VehicleTypeDto()
-                {
-                    ID = vehicleType.ID,
-                    Name = vehicleType.Name,
-                };
-
-                vehicleTypeDtos.Add(maintenanceDto);
+                vehicleTypeDtos.Add(new VehicleTypeDto().Map(vehicleType));
             }
 
             response.Data = vehicleTypeDtos;
@@ -121,13 +117,7 @@ namespace VehicleMaintenance.Business.Concrete
                 return response;
             }
 
-            var vehicleTypeDto = new VehicleTypeDto()
-            {
-                ID = vehicleType.ID,
-                Name = vehicleType.Name
-            };
-
-            response.Data = vehicleTypeDto;
+            response.Data = new VehicleTypeDto().Map(vehicleType);
             return response;
         }
 
@@ -157,6 +147,7 @@ namespace VehicleMaintenance.Business.Concrete
                 response.Message = "Araç Tipi güncellenirken bir hata oluştu lütfen daha sonra tekrar deneyiniz.";
             }
 
+            response.Data = new VehicleTypeDto().Map(existingVehicleType);
             return response;
         }
     }

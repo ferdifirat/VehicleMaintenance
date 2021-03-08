@@ -6,6 +6,7 @@ using VehicleMaintenance.Business.Abstract;
 using VehicleMaintenance.Core.DataAccess;
 using VehicleMaintenance.Core.Service;
 using VehicleMaintenance.DataAccess.Abstract;
+using VehicleMaintenance.DataAccess.ValidationRules.ManuelValidations;
 using VehicleMaintenance.Entity.Concrete;
 using VehicleMaintenance.Entity.DTOs;
 
@@ -25,6 +26,13 @@ namespace VehicleMaintenance.Business.Concrete
         public ResponseDto AddPictureGroup(PictureGroupDto pictureGroupDto)
         {
             var response = new ResponseDto();
+
+            var validationResponse = ManuelValidations.PictureGroupValidation(pictureGroupDto);
+            if (!validationResponse.IsSuccess)
+            {
+                return validationResponse;
+            }
+
             var existingPictureGroup = _pictureGroupDal.Get(x => x.PictureImage == pictureGroupDto.PictureImage);
 
             if (existingPictureGroup != null)
@@ -124,6 +132,12 @@ namespace VehicleMaintenance.Business.Concrete
         public ResponseDto UpdatePictureGroup(PictureGroupDto pictureGroupDto)
         {
             var response = new ResponseDto();
+
+            var validationResponse = ManuelValidations.PictureGroupValidation(pictureGroupDto);
+            if (!validationResponse.IsSuccess)
+            {
+                return validationResponse;
+            }
 
             var existingPictureGroup = _pictureGroupDal.Get(p => p.ID == pictureGroupDto.ID);
 

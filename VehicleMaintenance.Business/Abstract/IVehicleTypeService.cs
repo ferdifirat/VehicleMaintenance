@@ -8,7 +8,7 @@ namespace VehicleMaintenance.Business.Abstract
 {
     public interface IVehicleTypeService
     {
-        ResponseDto AddVehicleType(AddVehicleTypeDto vehicleTypeDto);
+        ResponseDto AddVehicleType(VehicleTypeDto vehicleTypeDto);
         ResponseDto UpdateVehicleType(VehicleTypeDto vehicleTypeDto);
         ResponseDto DeleteVehicleType(int id);
         ResponseDto GetVehicleTypeById(int id);

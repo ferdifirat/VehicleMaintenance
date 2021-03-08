@@ -41,7 +41,7 @@ namespace VehicleActionType.WebApi.Controllers
 
         [HttpPost]
         [Route("AddActionType")]
-        public ActionResult AddActionType(AddActionTypeDto actionType)
+        public ActionResult AddActionType(ActionTypeDto actionType)
         {
             var response = _actionTypeService.AddActionType(actionType);
 
@@ -50,7 +50,7 @@ namespace VehicleActionType.WebApi.Controllers
 
         [HttpPost]
         [Route("UpdateActionType")]
-        public ActionResult UpdateActionType(AddActionTypeDto actionType)
+        public ActionResult UpdateActionType(ActionTypeDto actionType)
         {
             var response = _actionTypeService.UpdateActionType(actionType);
 
@@ -58,7 +58,7 @@ namespace VehicleActionType.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("DeleteActionType")]
+        [Route("DeleteActionType/{id}")]
         public ActionResult DeleteActionType(int id)
         {
             var response = _actionTypeService.DeleteActionType(id);

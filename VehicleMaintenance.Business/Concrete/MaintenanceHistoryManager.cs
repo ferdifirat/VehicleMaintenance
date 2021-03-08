@@ -6,6 +6,7 @@ using VehicleMaintenance.Business.Abstract;
 using VehicleMaintenance.Core.DataAccess;
 using VehicleMaintenance.Core.Service;
 using VehicleMaintenance.DataAccess.Abstract;
+using VehicleMaintenance.DataAccess.ValidationRules.ManuelValidations;
 using VehicleMaintenance.Entity.Concrete;
 using VehicleMaintenance.Entity.DTOs;
 
@@ -26,6 +27,13 @@ namespace VehicleMaintenance.Business.Concrete
         public ResponseDto AddMaintenanceHistory(MaintenanceHistoryDto maintenanceHistoryDto)
         {
             var response = new ResponseDto();
+
+            var validationResponse = ManuelValidations.MaintenanceHistoryValidation(maintenanceHistoryDto);
+            if (!validationResponse.IsSuccess)
+            {
+                return validationResponse;
+            }
+
             var existingMaintenanceHistory = _maintenanceHistoryDal.Get(x => x.Text == maintenanceHistoryDto.Text && maintenanceHistoryDto.IsDeleted == false);
 
             if (existingMaintenanceHistory != null)
@@ -129,6 +137,12 @@ namespace VehicleMaintenance.Business.Concrete
         public ResponseDto UpdateMaintenanceHistory(MaintenanceHistoryDto dto)
         {
             var response = new ResponseDto();
+
+            var validationResponse = ManuelValidations.MaintenanceHistoryValidation(dto);
+            if (!validationResponse.IsSuccess)
+            {
+                return validationResponse;
+            }
 
             var existingMaintenanceHistory = _maintenanceHistoryDal.Get(p => p.ID == dto.ID && p.IsDeleted == false);
 

@@ -6,6 +6,7 @@ using VehicleMaintenance.Business.Abstract;
 using VehicleMaintenance.Core.DataAccess;
 using VehicleMaintenance.Core.Service;
 using VehicleMaintenance.DataAccess.Abstract;
+using VehicleMaintenance.DataAccess.ValidationRules.ManuelValidations;
 using VehicleMaintenance.Entity.Concrete;
 using VehicleMaintenance.Entity.DTOs;
 
@@ -23,15 +24,21 @@ namespace VehicleMaintenance.Business.Concrete
             _actionTypeDal = actionTypeDal;
             
         }
-        public ResponseDto AddActionType(AddActionTypeDto dto)
+        public ResponseDto AddActionType(ActionTypeDto dto)
         {
+            var validationResponse = ManuelValidations.ActionTypeValidation(dto);
+            if (!validationResponse.IsSuccess)
+            {
+                return validationResponse;
+            }
+
             var response = new ResponseDto();
             var existingActionType = _actionTypeDal.Get(x => x.Name == dto.Name && x.IsDeleted == false);
 
             if (existingActionType != null)
             {
                 response.IsSuccess = false;
-                response.Message = "Aynı isme ait bir aksiyon mevcut";
+                response.Message = "Aynı isme ait bir aksiyon tipi mevcut";
                 return response;
             }
 
@@ -56,9 +63,15 @@ namespace VehicleMaintenance.Business.Concrete
             return response;
         }
 
-        public ResponseDto UpdateActionType(AddActionTypeDto actionTypeDto)
+        public ResponseDto UpdateActionType(ActionTypeDto actionTypeDto)
         {
             var response = new ResponseDto();
+
+            var validationResponse = ManuelValidations.ActionTypeValidation(actionTypeDto);
+            if (!validationResponse.IsSuccess)
+            {
+                return validationResponse;
+            }
 
             var existingActionType = _actionTypeDal.Get(p => p.ID == actionTypeDto.ID && p.IsDeleted == false);
 

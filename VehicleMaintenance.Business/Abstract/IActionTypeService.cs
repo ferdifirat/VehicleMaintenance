@@ -8,8 +8,8 @@ namespace VehicleMaintenance.Business.Abstract
 {
     public interface IActionTypeService
     {
-        ResponseDto AddActionType(AddActionTypeDto actionTypeDto);
-        ResponseDto UpdateActionType(AddActionTypeDto actionTypeDto);
+        ResponseDto AddActionType(ActionTypeDto actionTypeDto);
+        ResponseDto UpdateActionType(ActionTypeDto actionTypeDto);
         ResponseDto DeleteActionType(int id);
         ResponseDto GetActionTypeById(int id);
         ResponseDto GetAllActionType();

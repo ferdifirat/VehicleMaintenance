@@ -41,7 +41,7 @@ namespace VehicleMaintenance.WebApi.Controllers
 
         [HttpPost]
         [Route("AddVehicleType")]
-        public ActionResult AddVehicleType(AddVehicleTypeDto vehicleType)
+        public ActionResult AddVehicleType(VehicleTypeDto vehicleType)
         {
             var response = _vehicleTypeService.AddVehicleType(vehicleType);
 

@@ -6,6 +6,7 @@ using VehicleMaintenance.Business.Abstract;
 using VehicleMaintenance.Core.DataAccess;
 using VehicleMaintenance.Core.Service;
 using VehicleMaintenance.DataAccess.Abstract;
+using VehicleMaintenance.DataAccess.ValidationRules.ManuelValidations;
 using VehicleMaintenance.Entity.Concrete;
 using VehicleMaintenance.Entity.DTOs;
 
@@ -25,6 +26,12 @@ namespace VehicleMaintenance.Business.Concrete
         public ResponseDto AddMaintenance(MaintenanceDto maintenanceDto)
         {
             var response = new ResponseDto();
+
+            var validationResponse = ManuelValidations.MaintenanceValidation(maintenanceDto);
+            if (!validationResponse.IsSuccess)
+            {
+                return validationResponse;
+            }
 
             var maintenance = new Maintenance()
             {
@@ -127,6 +134,12 @@ namespace VehicleMaintenance.Business.Concrete
         public ResponseDto UpdateMaintenance(MaintenanceDto maintenanceDto)
         {
             var response = new ResponseDto();
+
+            var validationResponse = ManuelValidations.MaintenanceValidation(maintenanceDto);
+            if (!validationResponse.IsSuccess)
+            {
+                return validationResponse;
+            }
 
             var existingMaintenance = _maintenanceDal.Get(p => p.ID == maintenanceDto.ID && p.IsDeleted == false);
 

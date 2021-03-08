@@ -58,7 +58,7 @@ namespace VehicleMaintenance.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("DeleteVehicleType")]
+        [Route("DeleteVehicleType/{id}")]
         public ActionResult DeleteVehicleType(int id)
         {
             var response = _vehicleTypeService.DeleteVehicleType(id);

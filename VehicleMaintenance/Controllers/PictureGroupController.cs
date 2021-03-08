@@ -58,7 +58,7 @@ namespace VehicleMaintenance.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("DeletePictureGroup")]
+        [Route("DeletePictureGroup/{id}")]
         public ActionResult DeletePictureGroup(int id)
         {
             var response = _pictureGroupService.DeletePictureGroup(id);
